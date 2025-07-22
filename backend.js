@@ -29,4 +29,24 @@ app.get('/api/swiggy', async (req, res) => {
   }
 });
 
+app.get('/api/swiggy/menu/:id', async (req, res) => {
+  const { id } = req.params;
+
+  const menuURL = `https://www.swiggy.com/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=25.59430&lng=85.13520&restaurantId=${id}`;
+
+  try {
+    const swiggyResponse = await axios.get(menuURL, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0',
+        'Accept': 'application/json'
+      }
+    });
+
+    res.json(swiggyResponse.data);
+  } catch (error) {
+    console.error('Swiggy MENU fetch error:', error.response?.data || error.message);
+    res.status(500).json({ error: 'Unable to fetch Swiggy menu data' });
+  }
+});
+
 app.listen(PORT, () => console.log(`Proxy server running`));
